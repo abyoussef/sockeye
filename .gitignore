@@ -15,3 +15,5 @@
 *.egg**
 .*.swp
 .mypy_cache
+sftp-config.json
+
