@@ -1,6 +1,6 @@
 # Sockeye
 
-[![Documentation Status](https://readthedocs.org/projects/sockeye/badge/?version=master)](http://sockeye.readthedocs.io/en/master/?badge=master)
+[![Documentation Status](https://readthedocs.org/projects/sockeye/badge/?version=latest)](http://sockeye.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/awslabs/sockeye.svg?branch=master)](https://travis-ci.org/awslabs/sockeye)
 
 This package contains the Sockeye project,
 a sequence-to-sequence framework for Neural Machine Translation based on MXNet.
@@ -26,6 +26,14 @@ Optionally, dmlc's tensorboard fork is supported to track learning curves (````p
 Full dependencies are listed in requirements.txt.
 
 ## Installation
+You have two options for installing sockeye: pip and directly from source.
+### pip
+
+```bash
+> pip install sockeye
+```
+
+### From Source
 
 If you want to just use sockeye without extending it, simply install it via
 ```bash
