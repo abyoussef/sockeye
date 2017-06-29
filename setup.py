@@ -72,7 +72,7 @@ args = dict(
     tests_require=['pytest', 'pytest-cov'],
 
     extras_require={
-        'optional': ['tensorboard'],
+        'optional': ['tensorboard', 'matplotlib'],
         'dev': get_requirements('requirements.dev.txt')
     },
 
@@ -86,6 +86,12 @@ args = dict(
             'sockeye-embeddings = sockeye.embeddings:main'
         ],
     },
+
+    classifiers = [
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3 :: Only',
+
+    ],
 
     cmdclass=cmdclass,
 

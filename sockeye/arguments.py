@@ -86,14 +86,25 @@ def add_device_args(params):
 
     device_params.add_argument('--device-ids', default=[-1],
                                help='List or number of GPUs ids to use. Default: %(default)s. '
-                                    'Use -x to automatically acquire x GPUs. '
-                                    'Use x [x] to use a specific GPU id on this host. '
+                                    'Use negative numbers to automatically acquire a certain number of GPUs, e.g. -5 '
+                                    'will find 5 free GPUs. '
+                                    'Use positive numbers to acquire a specific GPU id on this host. '
                                     '(Note that automatic acquisition of GPUs assumes that all GPU processes on '
                                     'this host are using automatic sockeye GPU acquisition).',
                                nargs='+', type=int)
     device_params.add_argument('--use-cpu',
                                action='store_true',
                                help='Use CPU device instead of GPU.')
+    device_params.add_argument('--disable-device-locking',
+                               action='store_true',
+                               help='Just use the specified device ids without locking.')
+    device_params.add_argument('--lock-dir',
+                               default="/tmp",
+                               help='When aquiring a GPU we do file based locking so that only one Sockeye process '
+                                    'can run on the a GPU. This is the folder in which we store the file '
+                                    'locks. For locking to work correctly it is assumed all processes use the same '
+                                    'lock directory. The only requirement for the directory are file '
+                                    'write permissions.')
     return params
 
 
@@ -225,7 +236,8 @@ def add_training_args(params):
     train_params.add_argument('--normalize-loss',
                               default=False,
                               action="store_true",
-                              help='Normalize the loss by dividing by the number of non-PAD tokens.')
+                              help='If turned on we normalize the loss by dividing by the number of non-PAD tokens.'
+                                   'If turned off the loss is only normalized by the number of sentences in a batch.')
 
     train_params.add_argument('--metrics',
                               nargs='+',
@@ -331,6 +343,17 @@ def add_training_args(params):
 
 def add_inference_args(params):
     decode_params = params.add_argument_group("Inference parameters")
+
+    decode_params.add_argument('--input', '-i',
+                               default=None,
+                               help='Input file to translate. One sentence per line. '
+                                    'If not given, will read from stdin.')
+    
+    decode_params.add_argument('--output', '-o',
+                               default=None,
+                               help='Output file to write translations to. '
+                                    'If not given, will write to stdout.')
+
     decode_params.add_argument('--models', '-m',
                                required=True,
                                nargs='+',
@@ -367,9 +390,6 @@ def add_inference_args(params):
                                choices=["translation", "translation_with_alignments", "align_plot", "align_text"],
                                help='Output type. Choices: [translation, translation_with_alignments, '
                                     'align_plot, align_text]. Default: %(default)s.')
-    decode_params.add_argument('--align-plot-prefix',
-                               default="align",
-                               help='Filename prefix for generated alignment visualization. Default: %(default)s')
     decode_params.add_argument('--sure-align-threshold',
                                default=0.9,
                                type=float,
